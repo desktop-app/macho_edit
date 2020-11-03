@@ -109,26 +109,12 @@ std::string LoadCommand::description() const {
 		case LC_VERSION_MIN_IPHONEOS: {
 			auto *c = (version_min_command *)raw_lc;
 
-			size_t form[] = {2, 1, 1};
-
 			o << ": ";
 
-			size_t offset = 0;
-			for(size_t i = 0; i < ELEMENTS(form); i++) {
-				if(i != 0) {
-					o << ".";
-				}
+			o << (c->version >> 16) << "." << ((c->version >> 8) & 0xFF) << "." << (c->version & 0xFF);
 
-				uint16_t version = 0;
-				for(size_t j = 0; j < form[i]; j++) {
-					version *= form[i];
-					version += ((uint8_t *)&c->version)[offset + j];
-				}
-
-				o << version;
-
-				offset += i;
-			}
+			o << ", sdk: ";
+			o << (c->sdk >> 16) << "." << ((c->sdk >> 8) & 0xFF) << "." << (c->sdk & 0xFF);
 
 			break;
 		}

@@ -292,7 +292,8 @@ void lc_insert(MachO &macho, uint32_t arch) {
 	static uint32_t insertable_cmds[] = {
 		LC_LOAD_DYLIB,
 		LC_LOAD_WEAK_DYLIB,
-		LC_RPATH
+		LC_RPATH,
+		LC_VERSION_MIN_MACOSX
 	};
 
 	std::vector<std::string> options;
@@ -340,6 +341,17 @@ void lc_insert(MachO &macho, uint32_t arch) {
 				c->cmdsize = SWAP32(cmdsize, magic);
 				c->path.offset = SWAP32(sizeof(dylib_command), magic);
 			}
+
+			break;
+		}
+		case LC_VERSION_MIN_MACOSX: {
+			uint32_t cmdsize = sizeof(version_min_command);
+			lc = (load_command*)malloc(cmdsize);
+			auto *c = (version_min_command *)lc;
+			c->cmd = SWAP32(cmd, magic);
+			c->cmdsize = SWAP32(cmdsize, magic);
+			c->version = (uint32_t(10) << 16) | (uint32_t(12) << 8) | (uint32_t(0));
+			c->sdk = (uint32_t(10) << 16) | (uint32_t(15) << 8) | (uint32_t(6));
 
 			break;
 		}
