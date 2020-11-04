@@ -57,6 +57,19 @@ int patch_object_main(int argc, const char *argv[]) {
 	lc.cmdsize = SWAP32(cmdsize, magic);
 	lc.version = parseVersion(version);
 	lc.sdk = parseVersion(sdk);
+
+	for (const auto &existing : macho.archs[arch].load_commands) {
+		if (existing.cmd != cmd) {
+			continue;
+		} else if (lc.version != ((version_min_command*)existing.raw_lc)->version
+			|| lc.sdk != ((version_min_command*)existing.raw_lc)->sdk) {
+			std::cout << "This binary has such command with different values :(\n";
+			exit(1);
+		} else {
+			return 0;
+		}
+	}
+
 	macho.insert_load_command(arch, (load_command*)&lc);
 	
 	return 0;
