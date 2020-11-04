@@ -106,7 +106,9 @@ std::string LoadCommand::description() const {
 			break;
 		}
 		case LC_VERSION_MIN_MACOSX:
-		case LC_VERSION_MIN_IPHONEOS: {
+		case LC_VERSION_MIN_IPHONEOS:
+		case LC_VERSION_MIN_TVOS:
+		case LC_VERSION_MIN_WATCHOS: {
 			auto *c = (version_min_command *)raw_lc;
 
 			o << ": ";
